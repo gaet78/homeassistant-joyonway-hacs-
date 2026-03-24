@@ -67,6 +67,10 @@ def parse_b4(frame: bytes) -> dict | None:
         "pump1": bool(pump_byte & 0x04),
         "pump2": bool(pump_byte & 0x10),
         "heating": flag_byte != 0x20,
+        "heating_mode": "pac_boiler" if flag_byte == 0x35
+                        else "pac" if flag_byte == 0x21
+                        else "off" if flag_byte == 0x20
+                        else f"unknown_0x{flag_byte:02x}",
         "light": bool(mode_byte & 0x01),
         "mode": "normal" if mode_byte & 0xFE == 0x90
                 else "programme" if mode_byte & 0xFE == 0x10
