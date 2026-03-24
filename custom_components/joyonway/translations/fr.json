@@ -1,0 +1,21 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connexion au Spa Joyonway",
+        "description": "Entrez l'adresse IP et le port de votre pont RS485/WiFi USR-W610.",
+        "data": {
+          "host": "Adresse IP",
+          "port": "Port"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de se connecter au W610. V\u00e9rifiez l'adresse IP et le port.",
+      "no_data": "Connect\u00e9 mais aucune donn\u00e9e RS485 re\u00e7ue. V\u00e9rifiez le c\u00e2blage et le mode W610 (Transparent)."
+    },
+    "abort": {
+      "already_configured": "Ce spa est d\u00e9j\u00e0 configur\u00e9."
+    }
+  }
+}

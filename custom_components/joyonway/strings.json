@@ -1,0 +1,21 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Joyonway Spa Connection",
+        "description": "Enter the IP address and port of your USR-W610 RS485/WiFi bridge.",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the W610 bridge. Check the IP address and port.",
+      "no_data": "Connected but no RS485 data received. Check wiring and W610 mode (Transparent)."
+    },
+    "abort": {
+      "already_configured": "This spa is already configured."
+    }
+  }
+}

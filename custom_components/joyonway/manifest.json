@@ -1,0 +1,10 @@
+{
+  "domain": "joyonway",
+  "name": "Joyonway Spa RS485",
+  "codeowners": ["@gaet78"],
+  "config_flow": true,
+  "documentation": "https://github.com/gaet78/ha-joyonway",
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "version": "1.0.0"
+}
