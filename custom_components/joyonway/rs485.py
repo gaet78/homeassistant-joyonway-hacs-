@@ -43,10 +43,7 @@ def extract_frame(data: bytes, cmd_byte: int) -> bytes | None:
             data[pos + 2] == 0xF9 and
             data[pos + 3] == 0xBF and
             data[pos + 4] == cmd_byte):
-            payload = data[pos + 2:pos + 26]  # F9 BF ... (24 bytes)
-            expected_crc = data[pos + 26]
-            if crc8(payload) == expected_crc:
-                last_frame = data[pos + 1:pos + 27]
+            last_frame = data[pos + 1:pos + 27]
         idx = pos + 1
     return last_frame
 
