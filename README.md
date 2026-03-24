@@ -130,6 +130,8 @@ L'intégration usurpe l'adresse du panneau de contrôle physique (`0x20`) sur le
 - **Écriture** : envoi répété de la trame de commande toutes les 50ms pendant 1 à 10 secondes (selon le type)
 - **Polling** : rafraîchissement automatique toutes les 30 secondes
 
+> **Temps de réponse** : les commandes (pompes, lumière, consigne) prennent quelques secondes avant confirmation dans HA. C'est normal — l'envoi de la commande par flood dure 1 à 10 secondes, puis il faut attendre le prochain cycle de lecture (3 secondes) pour que le retour d'état soit mis à jour.
+
 > **Résolution température** : le contrôleur du spa utilise les **Fahrenheit en interne** avec une précision entière. Les mises à jour en Celsius apparaissent par paliers de ~0.56°C — c'est un comportement normal.
 
 > **Pompe de recirculation** : elle ne peut pas être pilotée individuellement via le bus RS485. Elle est contrôlée uniquement par les programmes de filtration.
@@ -297,6 +299,8 @@ The integration spoofs the physical control panel address (`0x20`) on the RS485 
 - **Reading**: connects to W610 TCP, captures 3 seconds of bus traffic, parses B4 (status) and B5 (filtration) broadcast frames
 - **Writing**: floods the command frame every 50ms for 1-10 seconds (depending on command type)
 - **Polling**: automatic refresh every 30 seconds
+
+> **Response time**: commands (pumps, light, setpoint) take a few seconds before confirmation in HA. This is expected — the flood send takes 1-10 seconds, then the next read cycle (3 seconds) is needed to update the state.
 
 > **Temperature resolution**: the spa controller uses **Fahrenheit internally** with integer precision. Celsius updates appear in ~0.56°C steps — this is normal behavior.
 
