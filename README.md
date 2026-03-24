@@ -12,6 +12,11 @@
 
 Intégration Home Assistant (HACS) pour le contrôle local complet d'un **spa Joyonway (type Balboa)** via RS485, sans dépendance cloud. Configuration entièrement via l'interface HA — aucun YAML nécessaire.
 
+<p align="center">
+  <img src="images/dashboard.png" alt="Dashboard Home Assistant" width="800">
+  <br><em>Dashboard Spa dans Home Assistant</em>
+</p>
+
 > **Version simple (package YAML)** : si vous préférez une installation sans intégration custom, voir [Joyonway_control_home_assistant](https://github.com/gaet78/Joyonway_control_home_assistant)
 
 ### Fonctionnalités
@@ -31,7 +36,17 @@ Intégration Home Assistant (HACS) pour le contrôle local complet d'un **spa Jo
 | **Bridge RS485/WiFi** | [USR-W610](https://www.usr.cn/en/W610) ou bridge TCP-RS485 transparent similaire |
 | **Connexion** | Bus RS485 (port panneau de contrôle supplémentaire ou port module WiFi inutilisé) |
 
+<p align="center">
+  <img src="images/usr-w610.jpg" alt="USR-W610 RS485/WiFi Bridge" width="400">
+  <br><em>Bridge RS485/WiFi USR-W610</em>
+</p>
+
 ### Câblage RS485
+
+<p align="center">
+  <img src="images/rs485-connector.jpg" alt="Connecteur RS485 du spa" width="400">
+  <br><em>Connecteur 4 broches du bus RS485 (port écran de contrôle)</em>
+</p>
 
 Le câble contient 4 fils :
 
@@ -165,6 +180,11 @@ MIT
 
 Home Assistant integration (HACS) for full local control of **Joyonway (Balboa-like) spas** via RS485, without cloud dependency. Fully configured through the HA UI — no YAML needed.
 
+<p align="center">
+  <img src="images/dashboard.png" alt="Home Assistant Dashboard" width="800">
+  <br><em>Spa dashboard in Home Assistant</em>
+</p>
+
 > **Simple version (YAML package)**: if you prefer an installation without a custom integration, see [Joyonway_control_home_assistant](https://github.com/gaet78/Joyonway_control_home_assistant)
 
 ### Features
@@ -184,7 +204,17 @@ Home Assistant integration (HACS) for full local control of **Joyonway (Balboa-l
 | **RS485/WiFi bridge** | [USR-W610](https://www.usr.cn/en/W610) or similar transparent TCP-to-RS485 bridge |
 | **Connection** | RS485 bus connector (from spare control panel port or unused WiFi module port) |
 
+<p align="center">
+  <img src="images/usr-w610.jpg" alt="USR-W610 RS485/WiFi Bridge" width="400">
+  <br><em>USR-W610 RS485/WiFi Bridge</em>
+</p>
+
 ### RS485 Wiring
+
+<p align="center">
+  <img src="images/rs485-connector.jpg" alt="Spa RS485 connector" width="400">
+  <br><em>4-pin RS485 bus connector (control panel port)</em>
+</p>
 
 The cable has 4 wires:
 
