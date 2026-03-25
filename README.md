@@ -199,6 +199,47 @@ Testé avec :
 
 Devrait fonctionner avec d'autres spas utilisant le même protocole propriétaire Joyonway/Balboa (délimiteur 0x7E, même structure de trame). Le protocole n'est **PAS** du Balboa standard — c'est une variante propriétaire.
 
+### Cohabitation avec le panneau physique
+
+L'intégration **coexiste** avec le panneau de contrôle physique du spa — les deux peuvent fonctionner en parallèle sans conflit. Si vous changez la consigne ou activez une pompe depuis le panneau physique, HA détectera le changement au prochain cycle de lecture (30 secondes max). De même, les commandes envoyées depuis HA sont visibles immédiatement sur le panneau.
+
+> **Note** : si un programme est actif dans HA et que vous modifiez la consigne depuis le panneau physique, le programme repassera automatiquement en **Manuel** pour refléter le changement.
+
+### Limitations connues
+
+- **Heating mode 0x21** : la valeur `0x21` (PAC seule) apparaît aussi lors d'une simple recirculation (~176W). L'intégration ne peut pas distinguer les deux cas par le bus RS485 seul. Pour différencier, vous pouvez croiser avec un capteur de puissance externe (ex: Shelly Plug sur l'alimentation du spa — >500W = PAC active).
+- **Pompe de recirculation** : pas d'état individuel sur le bus RS485, elle est pilotée uniquement par les programmes de filtration.
+- **Puissance / consommation** : aucune donnée de puissance n'est disponible sur le bus RS485. L'app Joyonway mesure ces valeurs via le module WiFi interne, indépendamment.
+
+### Exemple d'automatisation : alerte gel
+
+Voici un exemple d'automatisation pour activer automatiquement le programme "Hors gel" quand la température extérieure descend sous 2°C :
+
+```yaml
+automation:
+  - alias: "Spa - Alerte gel"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.temperature_exterieure  # votre capteur
+        below: 2
+        for: "00:30:00"
+    condition:
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: select.joyonway_spa_programme
+            state: "Hors gel (11°C, 24/7)"
+    action:
+      - service: select.select_option
+        target:
+          entity_id: select.joyonway_spa_programme
+        data:
+          option: "Hors gel (11°C, 24/7)"
+      - service: notify.votre_service  # optionnel
+        data:
+          message: "Alerte gel ! Le spa passe en mode Hors gel."
+```
+
 ### Dépannage
 
 | Problème | Solution |
@@ -207,6 +248,8 @@ Devrait fonctionner avec d'autres spas utilisant le même protocole propriétair
 | "No RS485 data" | Vérifiez le câblage RS485 (A/B), le W610 doit être en **Mode Transparent**, 115200 baud |
 | Mises à jour température irrégulières | Normal — résolution 1°F (~0.56°C), mise à jour au changement de seuil |
 | Les commandes ne fonctionnent pas | Vérifiez que le W610 n'est PAS en mode Modbus TCP↔RTU |
+| Le programme repasse en "Manuel" tout seul | C'est normal — si la consigne ou la filtration est modifiée (depuis HA, le panneau physique, ou une autre automatisation), le programme actif est désactivé automatiquement |
+| Programmes personnalisés non visibles après mise à jour | Redémarrez Home Assistant — les options flow sont chargées au démarrage |
 
 ### Licence
 
@@ -411,6 +454,47 @@ Tested with:
 
 This should work with other spas using the same Joyonway/Balboa proprietary protocol (0x7E delimiter, same frame structure). The protocol is **NOT** standard Balboa — it's a proprietary variant.
 
+### Coexistence with the Physical Panel
+
+The integration **coexists** with the physical control panel — both can operate in parallel without conflict. If you change the setpoint or activate a pump from the physical panel, HA will detect the change at the next read cycle (30 seconds max). Likewise, commands sent from HA are immediately visible on the panel.
+
+> **Note**: if a programme is active in HA and you change the setpoint from the physical panel, the programme will automatically switch back to **Manual** to reflect the change.
+
+### Known Limitations
+
+- **Heating mode 0x21**: the value `0x21` (heat pump only) also appears during simple recirculation (~176W). The integration cannot distinguish between the two via the RS485 bus alone. To differentiate, you can cross-reference with an external power sensor (e.g., Shelly Plug on the spa power supply — >500W = heat pump active).
+- **Circulation pump**: no individual status on the RS485 bus, it is only controlled through filtration schedules.
+- **Power / consumption**: no power data is available on the RS485 bus. The Joyonway app measures these values via the internal WiFi module, independently.
+
+### Automation Example: Frost Alert
+
+Here's an example automation to automatically activate the "Frost protection" programme when the outdoor temperature drops below 2°C:
+
+```yaml
+automation:
+  - alias: "Spa - Frost alert"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.outdoor_temperature  # your sensor
+        below: 2
+        for: "00:30:00"
+    condition:
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: select.joyonway_spa_programme
+            state: "Hors gel (11°C, 24/7)"
+    action:
+      - service: select.select_option
+        target:
+          entity_id: select.joyonway_spa_programme
+        data:
+          option: "Hors gel (11°C, 24/7)"
+      - service: notify.your_service  # optional
+        data:
+          message: "Frost alert! The spa switched to Frost protection mode."
+```
+
 ### Troubleshooting
 
 | Problem | Solution |
@@ -419,6 +503,8 @@ This should work with other spas using the same Joyonway/Balboa proprietary prot
 | "No RS485 data" | Check RS485 wiring (A/B), W610 must be in **Transparent Mode**, 115200 baud |
 | Temperature updates seem irregular | Normal — resolution is 1°F (~0.56°C), updates only on threshold change |
 | Commands don't work | Verify W610 is NOT in Modbus TCP↔RTU mode |
+| Programme switches to "Manuel" on its own | This is expected — if the setpoint or filtration is changed (from HA, the physical panel, or another automation), the active programme is automatically deactivated |
+| Custom programmes not visible after update | Restart Home Assistant — options flows are loaded at startup |
 
 ### License
 
