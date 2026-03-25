@@ -21,11 +21,13 @@ Intégration Home Assistant (HACS) pour le contrôle local complet d'un **spa Jo
 
 ### Fonctionnalités
 
-- **Capteurs** : température eau, consigne, température sortie PAC, mode, programmes de filtration (2 créneaux)
+- **Capteurs** : température eau, consigne, température sortie PAC, mode chauffage, programmes de filtration (2 créneaux), connectivité
 - **Capteurs binaires** : pompe 1, pompe 2, chauffage, lumière
-- **Interrupteurs** : pompe 1, pompe 2, lumière (on/off)
-- **Consigne température** : modifiable via appels de service
-- **Programmes filtration** : configurables via appels de service
+- **Interrupteurs** : pompe 1, pompe 2, lumière, filtration (on/off)
+- **Consigne température** : slider 11-39°C, envoi direct sur le bus RS485
+- **Programmes prédéfinis** : Hors gel, Prêt à plonger, En repos — appliquent consigne + filtration en un clic
+- **Programmes personnalisés** : créez vos propres programmes via l'interface de configuration
+- **Session "Je plonge"** : monte à 38°C et repasse en "En repos" après une durée configurable (1-12h)
 - **Config flow UI** : ajoutez votre spa depuis l'interface HA, sans YAML
 
 ### Matériel requis
@@ -104,6 +106,7 @@ Toutes les entités sont regroupées sous un appareil unique **"Joyonway Spa"**.
 | Setpoint | Consigne active (°C) |
 | Heat Pump Output | Température sortie PAC (°C) |
 | Mode | normal / programme |
+| Heating Mode | off / pac / pac_boiler |
 | Filtration 1 | Créneau 1 (active/inactive + horaires en attributs) |
 | Filtration 2 | Créneau 2 (active/inactive + horaires en attributs) |
 
@@ -114,6 +117,7 @@ Toutes les entités sont regroupées sous un appareil unique **"Joyonway Spa"**.
 | Pump 2 | État pompe jets 2 |
 | Heating | Chauffage actif (PAC et/ou résistance) |
 | Light | État lumière |
+| Connectivity | Connectivité avec le bridge W610 |
 
 #### Interrupteurs (écriture sur le bus RS485)
 | Entité | Description |
@@ -121,6 +125,46 @@ Toutes les entités sont regroupées sous un appareil unique **"Joyonway Spa"**.
 | Pump 1 | Basculer pompe jets 1 |
 | Pump 2 | Basculer pompe jets 2 |
 | Light | Basculer lumière |
+| Filtration | Activer/désactiver la filtration (conserve les horaires) |
+
+#### Contrôles
+| Entité | Type | Description |
+|--------|------|-------------|
+| Programme | Select | Sélection du programme actif (prédéfinis + personnalisés) |
+| Consigne | Number | Slider consigne température (11-39°C) |
+| Durée session | Number | Durée de la session "Je plonge" (1-12h) |
+| Je plonge ! | Button | Lance une session : chauffe à 38°C, repasse en "En repos" après la durée configurée |
+| Annuler session | Button | Annule la session en cours et repasse en "En repos" |
+
+### Gestion des programmes
+
+#### Programmes prédéfinis
+
+L'intégration inclut 3 programmes prédéfinis + le mode Manuel :
+
+| Programme | Consigne | Filtration |
+|-----------|----------|------------|
+| Manuel | — | — |
+| Hors gel (11°C, 24/7) | 11°C | 00:00 - 23:59 |
+| Prêt à plonger (38°C, 10h-23h) | 38°C | 10:00 - 23:00 |
+| En repos (30°C, 12h-20h) | 30°C | 12:00 - 20:00 |
+
+Quand un programme est sélectionné, la consigne et la filtration sont envoyées automatiquement au spa via RS485. Si la consigne ou la filtration est modifiée manuellement (depuis HA ou le panneau physique du spa), le programme repasse automatiquement en **Manuel**.
+
+#### Programmes personnalisés
+
+Vous pouvez créer vos propres programmes depuis l'interface HA :
+
+1. Allez dans **Paramètres → Appareils et services**
+2. Trouvez **Joyonway Spa RS485** dans la liste
+3. Cliquez sur l'icône **roue dentée** (⚙️) à côté de l'intégration
+4. Choisissez **Ajouter un programme**
+5. Renseignez : nom, consigne température, et horaires de filtration
+6. Validez — le programme apparaît immédiatement dans le select "Programme"
+
+Le nom du programme est automatiquement formaté avec un résumé : `Mon programme (35°C, 14h-22h)`.
+
+Depuis le même menu, vous pouvez aussi **modifier** ou **supprimer** vos programmes personnalisés. Les programmes prédéfinis ne peuvent pas être modifiés.
 
 ### Fonctionnement
 
@@ -191,11 +235,13 @@ Home Assistant integration (HACS) for full local control of **Joyonway (Balboa-l
 
 ### Features
 
-- **Sensors**: Water temperature, setpoint, heat pump output temperature, operating mode, filtration schedules (2 slots)
+- **Sensors**: Water temperature, setpoint, heat pump output temperature, heating mode, filtration schedules (2 slots), connectivity
 - **Binary sensors**: Pump 1, Pump 2, Heating, Light status
-- **Switches**: Pump 1, Pump 2, Light (on/off control)
-- **Temperature setpoint**: Adjustable via service calls
-- **Filtration schedule**: Configurable via service calls
+- **Switches**: Pump 1, Pump 2, Light, Filtration (on/off control)
+- **Temperature setpoint**: 11-39°C slider, sent directly to the RS485 bus
+- **Built-in programmes**: Frost protection, Ready to swim, Resting — set temperature + filtration in one click
+- **Custom programmes**: create your own programmes through the configuration UI
+- **"Dive in" session**: heats to 38°C and auto-returns to "Resting" after a configurable duration (1-12h)
 - **UI config flow**: Add your spa from the HA interface, no YAML required
 
 ### Hardware Required
@@ -274,6 +320,7 @@ All entities are grouped under a single **"Joyonway Spa"** device.
 | Setpoint | Active setpoint (°C) |
 | Heat Pump Output | Heat pump output water temperature (°C) |
 | Mode | normal / programme |
+| Heating Mode | off / pac / pac_boiler |
 | Filtration 1 | Schedule slot 1 (active/inactive + times in attributes) |
 | Filtration 2 | Schedule slot 2 (active/inactive + times in attributes) |
 
@@ -284,6 +331,7 @@ All entities are grouped under a single **"Joyonway Spa"** device.
 | Pump 2 | Jet pump 2 status |
 | Heating | Heating active (heat pump and/or electric heater) |
 | Light | Light status |
+| Connectivity | Connection status with the W610 bridge |
 
 #### Switches (write to RS485 bus)
 | Entity | Description |
@@ -291,6 +339,46 @@ All entities are grouped under a single **"Joyonway Spa"** device.
 | Pump 1 | Toggle jet pump 1 |
 | Pump 2 | Toggle jet pump 2 |
 | Light | Toggle light |
+| Filtration | Toggle filtration on/off (preserves current schedule times) |
+
+#### Controls
+| Entity | Type | Description |
+|--------|------|-------------|
+| Programme | Select | Active programme selection (built-in + custom) |
+| Setpoint | Number | Temperature setpoint slider (11-39°C) |
+| Session Duration | Number | "Dive in" session duration (1-12h) |
+| Dive in! | Button | Start a session: heats to 38°C, returns to "Resting" after the configured duration |
+| Cancel Session | Button | Cancel the current session and return to "Resting" |
+
+### Programme Management
+
+#### Built-in Programmes
+
+The integration includes 3 built-in programmes + Manual mode:
+
+| Programme | Setpoint | Filtration |
+|-----------|----------|------------|
+| Manuel (Manual) | — | — |
+| Hors gel / Frost protection (11°C, 24/7) | 11°C | 00:00 - 23:59 |
+| Prêt à plonger / Ready to swim (38°C, 10h-23h) | 38°C | 10:00 - 23:00 |
+| En repos / Resting (30°C, 12h-20h) | 30°C | 12:00 - 20:00 |
+
+When a programme is selected, the setpoint and filtration schedule are automatically sent to the spa via RS485. If the setpoint or filtration is changed manually (from HA or the physical spa panel), the programme automatically switches back to **Manual**.
+
+#### Custom Programmes
+
+You can create your own programmes from the HA UI:
+
+1. Go to **Settings → Devices & Services**
+2. Find **Joyonway Spa RS485** in the list
+3. Click the **gear icon** (⚙️) next to the integration
+4. Choose **Add a programme**
+5. Fill in: name, target temperature, and filtration schedule
+6. Submit — the programme immediately appears in the "Programme" select entity
+
+The programme name is automatically formatted with a summary: `My programme (35°C, 2pm-10pm)`.
+
+From the same menu, you can also **edit** or **delete** your custom programmes. Built-in programmes cannot be modified.
 
 ### How it Works
 
