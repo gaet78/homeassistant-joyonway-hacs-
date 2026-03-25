@@ -17,8 +17,6 @@ Intégration Home Assistant (HACS) pour le contrôle local complet d'un **spa Jo
   <br><em>Dashboard Spa dans Home Assistant</em>
 </p>
 
-> **Version simple (package YAML)** : si vous préférez une installation sans intégration custom, voir [Joyonway_control_home_assistant](https://github.com/gaet78/Joyonway_control_home_assistant)
-
 ### Fonctionnalités
 
 - **Capteurs** : température eau, consigne, température sortie PAC, mode chauffage, programmes de filtration (2 créneaux), connectivité
@@ -190,7 +188,7 @@ L'intégration usurpe l'adresse du panneau de contrôle physique (`0x20`) sur le
 | `20 BF A4` | Panneau → Contrôleur | Programme filtration |
 | `20 BF AE` | Panneau → Contrôleur | On/off lumière |
 
-Pour la documentation complète du protocole, voir le dépôt compagnon : [Joyonway_control_home_assistant — docs/protocol.md](https://github.com/gaet78/Joyonway_control_home_assistant/blob/main/docs/protocol.md)
+Pour la documentation complète du protocole, voir [docs/protocol.md](docs/protocol.md)
 
 ### Compatibilité
 
@@ -230,8 +228,6 @@ Home Assistant integration (HACS) for full local control of **Joyonway (Balboa-l
   <img src="https://raw.githubusercontent.com/gaet78/homeassistant-joyonway-hacs-/main/images/dashboard.png" alt="Home Assistant Dashboard" width="800">
   <br><em>Spa dashboard in Home Assistant</em>
 </p>
-
-> **Simple version (YAML package)**: if you prefer an installation without a custom integration, see [Joyonway_control_home_assistant](https://github.com/gaet78/Joyonway_control_home_assistant)
 
 ### Features
 
@@ -404,7 +400,7 @@ The integration spoofs the physical control panel address (`0x20`) on the RS485 
 | `20 BF A4` | Panel → Controller | Filtration schedule change |
 | `20 BF AE` | Panel → Controller | Light on/off |
 
-For full protocol documentation, see the companion repository: [Joyonway_control_home_assistant — docs/protocol.md](https://github.com/gaet78/Joyonway_control_home_assistant/blob/main/docs/protocol.md)
+For full protocol documentation, see [docs/protocol.md](docs/protocol.md)
 
 ### Compatibility
 
