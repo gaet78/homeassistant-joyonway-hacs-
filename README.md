@@ -33,7 +33,7 @@ Intégration Home Assistant (HACS) pour le contrôle local complet d'un **spa Jo
 | Composant | Détails |
 |-----------|---------|
 | **Spa** | Joyonway avec contrôleur type Balboa |
-| **Bridge RS485/WiFi** | [USR-W610](https://www.usr.cn/en/W610) ou bridge TCP-RS485 transparent similaire |
+| **Bridge RS485/WiFi** | [USR-W610](https://www.usr.cn/en/W610) (~45€ sur Amazon en 2026) ou bridge TCP-RS485 transparent similaire |
 | **Connexion** | Bus RS485 (port panneau de contrôle supplémentaire ou port module WiFi inutilisé) |
 
 <p align="center">
@@ -245,7 +245,7 @@ Home Assistant integration (HACS) for full local control of **Joyonway (Balboa-l
 | Component | Details |
 |-----------|---------|
 | **Spa** | Joyonway with Balboa-like controller |
-| **RS485/WiFi bridge** | [USR-W610](https://www.usr.cn/en/W610) or similar transparent TCP-to-RS485 bridge |
+| **RS485/WiFi bridge** | [USR-W610](https://www.usr.cn/en/W610) (~€45 on Amazon in 2026) or similar transparent TCP-to-RS485 bridge |
 | **Connection** | RS485 bus connector (from spare control panel port or unused WiFi module port) |
 
 <p align="center">
