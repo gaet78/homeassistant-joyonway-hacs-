@@ -13,7 +13,7 @@
 Intégration Home Assistant (HACS) pour le contrôle local complet d'un **spa Joyonway (type Balboa)** via RS485, sans dépendance cloud. Configuration entièrement via l'interface HA — aucun YAML nécessaire.
 
 <p align="center">
-  <img src="images/dashboard.png" alt="Dashboard Home Assistant" width="800">
+  <img src="https://raw.githubusercontent.com/gaet78/homeassistant-joyonway-hacs-/main/images/dashboard.png" alt="Dashboard Home Assistant" width="800">
   <br><em>Dashboard Spa dans Home Assistant</em>
 </p>
 
@@ -37,14 +37,14 @@ Intégration Home Assistant (HACS) pour le contrôle local complet d'un **spa Jo
 | **Connexion** | Bus RS485 (port panneau de contrôle supplémentaire ou port module WiFi inutilisé) |
 
 <p align="center">
-  <img src="images/usr-w610.jpg" alt="USR-W610 RS485/WiFi Bridge" width="400">
+  <img src="https://raw.githubusercontent.com/gaet78/homeassistant-joyonway-hacs-/main/images/usr-w610.jpg" alt="USR-W610 RS485/WiFi Bridge" width="400">
   <br><em>Bridge RS485/WiFi USR-W610</em>
 </p>
 
 ### Câblage RS485
 
 <p align="center">
-  <img src="images/rs485-connector.jpg" alt="Connecteur RS485 du spa" width="400">
+  <img src="https://raw.githubusercontent.com/gaet78/homeassistant-joyonway-hacs-/main/images/rs485-connector.jpg" alt="Connecteur RS485 du spa" width="400">
   <br><em>Connecteur 4 broches du bus RS485 (port écran de contrôle)</em>
 </p>
 
@@ -183,7 +183,7 @@ MIT
 Home Assistant integration (HACS) for full local control of **Joyonway (Balboa-like) spas** via RS485, without cloud dependency. Fully configured through the HA UI — no YAML needed.
 
 <p align="center">
-  <img src="images/dashboard.png" alt="Home Assistant Dashboard" width="800">
+  <img src="https://raw.githubusercontent.com/gaet78/homeassistant-joyonway-hacs-/main/images/dashboard.png" alt="Home Assistant Dashboard" width="800">
   <br><em>Spa dashboard in Home Assistant</em>
 </p>
 
@@ -207,14 +207,14 @@ Home Assistant integration (HACS) for full local control of **Joyonway (Balboa-l
 | **Connection** | RS485 bus connector (from spare control panel port or unused WiFi module port) |
 
 <p align="center">
-  <img src="images/usr-w610.jpg" alt="USR-W610 RS485/WiFi Bridge" width="400">
+  <img src="https://raw.githubusercontent.com/gaet78/homeassistant-joyonway-hacs-/main/images/usr-w610.jpg" alt="USR-W610 RS485/WiFi Bridge" width="400">
   <br><em>USR-W610 RS485/WiFi Bridge</em>
 </p>
 
 ### RS485 Wiring
 
 <p align="center">
-  <img src="images/rs485-connector.jpg" alt="Spa RS485 connector" width="400">
+  <img src="https://raw.githubusercontent.com/gaet78/homeassistant-joyonway-hacs-/main/images/rs485-connector.jpg" alt="Spa RS485 connector" width="400">
   <br><em>4-pin RS485 bus connector (control panel port)</em>
 </p>
 
