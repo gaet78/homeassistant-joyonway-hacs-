@@ -1,4 +1,5 @@
 {
   "name": "Joyonway Spa RS485",
-  "render_readme": true
+  "render_readme": true,
+  "icon": "https://raw.githubusercontent.com/gaet78/homeassistant-joyonway-hacs-/main/images/icon.png"
 }
