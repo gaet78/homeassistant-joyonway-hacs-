@@ -16,7 +16,7 @@ FLOOD_INTERVAL = 0.05
 
 DEFAULT_SESSION_DURATION = 6
 
-PROGRAMMES = {
+DEFAULT_PROGRAMMES = {
     "Manuel": {},
     "Hors gel (11°C, 24/7)": {
         "setpoint": 11,
@@ -34,3 +34,5 @@ PROGRAMMES = {
         "filtration2": {"active": False},
     },
 }
+
+CONF_CUSTOM_PROGRAMMES = "custom_programmes"

@@ -17,5 +17,71 @@
     "abort": {
       "already_configured": "Ce spa est d\u00e9j\u00e0 configur\u00e9."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Programmes du Spa",
+        "description": "G\u00e9rer les programmes personnalis\u00e9s de votre spa.",
+        "data": {
+          "action": "Action"
+        }
+      },
+      "add": {
+        "title": "Ajouter un programme",
+        "description": "Cr\u00e9er un nouveau programme personnalis\u00e9.",
+        "data": {
+          "name": "Nom du programme",
+          "setpoint": "Consigne temp\u00e9rature (\u00b0C)",
+          "filtration1_active": "Filtration 1 active",
+          "filtration1_start_h": "Filtration 1 heure d\u00e9but",
+          "filtration1_start_m": "Filtration 1 minute d\u00e9but",
+          "filtration1_end_h": "Filtration 1 heure fin",
+          "filtration1_end_m": "Filtration 1 minute fin",
+          "filtration2_active": "Filtration 2 active",
+          "filtration2_start_h": "Filtration 2 heure d\u00e9but",
+          "filtration2_start_m": "Filtration 2 minute d\u00e9but",
+          "filtration2_end_h": "Filtration 2 heure fin",
+          "filtration2_end_m": "Filtration 2 minute fin"
+        }
+      },
+      "edit": {
+        "title": "Modifier un programme",
+        "description": "Modifier un programme personnalis\u00e9 existant.",
+        "data": {
+          "name": "Nom du programme",
+          "setpoint": "Consigne temp\u00e9rature (\u00b0C)",
+          "filtration1_active": "Filtration 1 active",
+          "filtration1_start_h": "Filtration 1 heure d\u00e9but",
+          "filtration1_start_m": "Filtration 1 minute d\u00e9but",
+          "filtration1_end_h": "Filtration 1 heure fin",
+          "filtration1_end_m": "Filtration 1 minute fin",
+          "filtration2_active": "Filtration 2 active",
+          "filtration2_start_h": "Filtration 2 heure d\u00e9but",
+          "filtration2_start_m": "Filtration 2 minute d\u00e9but",
+          "filtration2_end_h": "Filtration 2 heure fin",
+          "filtration2_end_m": "Filtration 2 minute fin"
+        }
+      },
+      "pick_edit": {
+        "title": "S\u00e9lectionner le programme \u00e0 modifier",
+        "data": {
+          "programme": "Programme"
+        }
+      },
+      "pick_delete": {
+        "title": "S\u00e9lectionner le programme \u00e0 supprimer",
+        "data": {
+          "programme": "Programme"
+        }
+      }
+    },
+    "error": {
+      "name_exists": "Un programme avec ce nom existe d\u00e9j\u00e0.",
+      "name_empty": "Le nom du programme ne peut pas \u00eatre vide."
+    },
+    "abort": {
+      "no_custom_programmes": "Aucun programme personnalis\u00e9 \u00e0 modifier ou supprimer."
+    }
   }
 }

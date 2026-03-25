@@ -18,7 +18,8 @@ from .const import (
     FLOOD_DURATION_SETPOINT,
     FLOOD_DURATION_FILTRATION,
     FLOOD_INTERVAL,
-    PROGRAMMES,
+    DEFAULT_PROGRAMMES,
+    CONF_CUSTOM_PROGRAMMES,
 )
 from .rs485 import read_spa, flood_cmd, cmd_setpoint, cmd_pump, cmd_light, cmd_filtration
 
@@ -28,7 +29,8 @@ _LOGGER = logging.getLogger(__name__)
 class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
     """Coordinator to poll spa status via RS485."""
 
-    def __init__(self, hass: HomeAssistant, host: str, port: int) -> None:
+    def __init__(self, hass: HomeAssistant, host: str, port: int,
+                 custom_programmes: dict | None = None) -> None:
         """Initialize."""
         super().__init__(
             hass,
@@ -38,6 +40,9 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
         )
         self.host = host
         self.port = port
+
+        # Programmes: defaults + custom from options
+        self._custom_programmes: dict = custom_programmes or {}
 
         # Soft state (managed by entities, persisted via RestoreEntity)
         self.programme: str = "Manuel"
@@ -51,6 +56,24 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
         # Listeners for soft state changes
         self._programme_listeners: list = []
         self._setpoint_listeners: list = []
+
+    @property
+    def programmes(self) -> dict:
+        """Return all programmes (default + custom)."""
+        return {**DEFAULT_PROGRAMMES, **self._custom_programmes}
+
+    @property
+    def programme_names(self) -> list[str]:
+        """Return all programme names."""
+        return list(self.programmes.keys())
+
+    def update_custom_programmes(self, custom: dict) -> None:
+        """Update custom programmes from options flow."""
+        self._custom_programmes = custom
+        # If current programme was deleted, switch to Manuel
+        if self.programme not in self.programmes:
+            self.programme = "Manuel"
+        self._notify_programme_listeners()
 
     async def _async_update_data(self) -> dict:
         """Fetch data from RS485 bus."""
@@ -85,7 +108,7 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
         if self.programme == "Manuel":
             return
 
-        prog_def = PROGRAMMES.get(self.programme)
+        prog_def = self.programmes.get(self.programme)
         if not prog_def:
             return
 
@@ -210,7 +233,7 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
         if name == "Manuel":
             return
 
-        prog_def = PROGRAMMES.get(name)
+        prog_def = self.programmes.get(name)
         if not prog_def:
             return
 

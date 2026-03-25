@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 
-from .const import DOMAIN, PROGRAMMES
+from .const import DOMAIN
 from .coordinator import JoyonwayCoordinator
 from .entity import JoyonwayEntity
 
@@ -25,7 +25,6 @@ class JoyonwayProgrammeSelect(JoyonwayEntity, SelectEntity, RestoreEntity):
     """Select entity for spa programme."""
 
     _attr_icon = "mdi:playlist-play"
-    _attr_options = list(PROGRAMMES.keys())
 
     def __init__(self, coordinator: JoyonwayCoordinator) -> None:
         """Initialize."""
@@ -36,8 +35,13 @@ class JoyonwayProgrammeSelect(JoyonwayEntity, SelectEntity, RestoreEntity):
         """Restore previous state."""
         await super().async_added_to_hass()
         if (last_state := await self.async_get_last_state()) is not None:
-            if last_state.state in self._attr_options:
+            if last_state.state in self.options:
                 self.coordinator.programme = last_state.state
+
+    @property
+    def options(self) -> list[str]:
+        """Return dynamic list of programme names."""
+        return self.coordinator.programme_names
 
     @property
     def current_option(self) -> str:

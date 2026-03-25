@@ -17,5 +17,71 @@
     "abort": {
       "already_configured": "This spa is already configured."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Spa Programmes",
+        "description": "Manage custom programmes for your spa.",
+        "data": {
+          "action": "Action"
+        }
+      },
+      "add": {
+        "title": "Add Programme",
+        "description": "Create a new custom programme.",
+        "data": {
+          "name": "Programme name",
+          "setpoint": "Consigne temp\u00e9rature (\u00b0C)",
+          "filtration1_active": "Filtration 1 active",
+          "filtration1_start_h": "Filtration 1 start hour",
+          "filtration1_start_m": "Filtration 1 start minute",
+          "filtration1_end_h": "Filtration 1 end hour",
+          "filtration1_end_m": "Filtration 1 end minute",
+          "filtration2_active": "Filtration 2 active",
+          "filtration2_start_h": "Filtration 2 start hour",
+          "filtration2_start_m": "Filtration 2 start minute",
+          "filtration2_end_h": "Filtration 2 end hour",
+          "filtration2_end_m": "Filtration 2 end minute"
+        }
+      },
+      "edit": {
+        "title": "Edit Programme",
+        "description": "Modify an existing custom programme.",
+        "data": {
+          "name": "Programme name",
+          "setpoint": "Consigne temp\u00e9rature (\u00b0C)",
+          "filtration1_active": "Filtration 1 active",
+          "filtration1_start_h": "Filtration 1 start hour",
+          "filtration1_start_m": "Filtration 1 start minute",
+          "filtration1_end_h": "Filtration 1 end hour",
+          "filtration1_end_m": "Filtration 1 end minute",
+          "filtration2_active": "Filtration 2 active",
+          "filtration2_start_h": "Filtration 2 start hour",
+          "filtration2_start_m": "Filtration 2 start minute",
+          "filtration2_end_h": "Filtration 2 end hour",
+          "filtration2_end_m": "Filtration 2 end minute"
+        }
+      },
+      "pick_edit": {
+        "title": "Select Programme to Edit",
+        "data": {
+          "programme": "Programme"
+        }
+      },
+      "pick_delete": {
+        "title": "Select Programme to Delete",
+        "data": {
+          "programme": "Programme"
+        }
+      }
+    },
+    "error": {
+      "name_exists": "A programme with this name already exists.",
+      "name_empty": "Programme name cannot be empty."
+    },
+    "abort": {
+      "no_custom_programmes": "No custom programmes to edit or delete."
+    }
   }
 }
