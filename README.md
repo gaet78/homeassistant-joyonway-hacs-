@@ -58,8 +58,8 @@ Le câble contient 4 fils :
 | Noir | Ground | Non utilisé |
 
 **Où se connecter :**
-- **Option 1 (recommandée)** : utiliser le connecteur d'un écran de contrôle de rechange ou en panne — rien à couper, la garantie est préservée
-- **Option 2** : si pas de PAC, utiliser le connecteur blanc **CN23** ou **CN24** sur la carte mère du contrôleur
+- **Option 1 (recommandée)** : le bus RS485 dispose d'un connecteur libre (probablement prévu pour le module WiFi). Si vous avez un ancien panneau de contrôle HS, vous pouvez récupérer son connecteur — aucun câble à couper, garantie préservée. Ce type de connecteur 4 broches est malheureusement difficile à trouver dans le commerce ; si vous n'en avez pas, il faudra peut-être couper et souder les fils directement.
+- **Option 2** : sur la carte mère du contrôleur, il y a deux connecteurs **CN23** et **CN24**. Le panneau de contrôle est branché sur l'un des deux, l'autre est libre. Le connecteur 4 broches utilisé ici est plus courant et plus facile à trouver.
 
 **Câble :** du simple câble réseau (Ethernet) fonctionne très bien pour relier le connecteur du spa au W610. Testé avec 10 mètres sans problème. Cela permet de placer le W610 **hors de la zone spa**, à l'abri de l'humidité.
 
@@ -270,8 +270,8 @@ The cable has 4 wires:
 | Black | Ground | Not used |
 
 **Where to connect:**
-- **Option 1 (recommended)**: use the connector from a spare or faulty control panel — no cutting required, warranty preserved
-- **Option 2**: if no heat pump, use the white **CN23** or **CN24** connector on the controller motherboard
+- **Option 1 (recommended)**: the RS485 bus has a spare connector (likely intended for the WiFi module). If you have an old or faulty control panel, you can salvage its connector — no cutting required, warranty preserved. This specific 4-pin connector is unfortunately hard to find online; if you don't have a spare, you may need to cut and solder the wires directly.
+- **Option 2**: on the controller motherboard, there are two connectors **CN23** and **CN24**. The control panel is plugged into one of them, the other is free. The 4-pin connector used here is more common and easier to source.
 
 **Cable:** standard Ethernet cable works perfectly to connect the spa connector to the W610. Tested with 10 meters without any issue. This allows placing the W610 **outside the spa area**, away from moisture.
 
