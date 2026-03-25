@@ -9,7 +9,14 @@ from homeassistant.core import HomeAssistant
 from .const import DOMAIN
 from .coordinator import JoyonwayCoordinator
 
-PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.SWITCH]
+PLATFORMS = [
+    Platform.SENSOR,
+    Platform.BINARY_SENSOR,
+    Platform.SWITCH,
+    Platform.SELECT,
+    Platform.NUMBER,
+    Platform.BUTTON,
+]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

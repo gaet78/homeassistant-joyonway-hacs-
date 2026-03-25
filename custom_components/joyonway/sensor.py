@@ -28,6 +28,7 @@ async def async_setup_entry(
         JoyonwayTemperatureSensor(coordinator, "setpoint", "Setpoint"),
         JoyonwayTemperatureSensor(coordinator, "temperature_pac", "Heat Pump Output"),
         JoyonwayModeSensor(coordinator),
+        JoyonwayHeatingModeSensor(coordinator),
         JoyonwayFiltrationSensor(coordinator, 1),
         JoyonwayFiltrationSensor(coordinator, 2),
     ]
@@ -65,6 +66,31 @@ class JoyonwayModeSensor(JoyonwayEntity, SensorEntity):
         if self.coordinator.data is None:
             return None
         return self.coordinator.data.get("mode")
+
+
+class JoyonwayHeatingModeSensor(JoyonwayEntity, SensorEntity):
+    """Sensor showing the heating mode (off/pac/pac_boiler)."""
+
+    def __init__(self, coordinator: JoyonwayCoordinator) -> None:
+        """Initialize."""
+        super().__init__(coordinator, "heating_mode", "Heating Mode")
+
+    @property
+    def icon(self) -> str:
+        """Return icon based on heating mode."""
+        mode = self.native_value
+        if mode == "pac_boiler":
+            return "mdi:fire"
+        if mode == "pac":
+            return "mdi:heat-pump"
+        return "mdi:snowflake"
+
+    @property
+    def native_value(self) -> str | None:
+        """Return the heating mode."""
+        if self.coordinator.data is None:
+            return None
+        return self.coordinator.data.get("heating_mode", "off")
 
 
 class JoyonwayFiltrationSensor(JoyonwayEntity, SensorEntity):

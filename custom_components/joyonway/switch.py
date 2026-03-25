@@ -24,6 +24,8 @@ async def async_setup_entry(
         JoyonwayPumpSwitch(coordinator, 1),
         JoyonwayPumpSwitch(coordinator, 2),
         JoyonwayLightSwitch(coordinator),
+        JoyonwayFiltrationSwitch(coordinator, 1),
+        JoyonwayFiltrationSwitch(coordinator, 2),
     ])
 
 
@@ -76,3 +78,29 @@ class JoyonwayLightSwitch(JoyonwayEntity, SwitchEntity):
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the light off."""
         await self.coordinator.async_set_light(False)
+
+
+class JoyonwayFiltrationSwitch(JoyonwayEntity, SwitchEntity):
+    """Switch to toggle filtration schedule on/off."""
+
+    _attr_icon = "mdi:pump"
+
+    def __init__(self, coordinator: JoyonwayCoordinator, slot: int) -> None:
+        """Initialize."""
+        super().__init__(coordinator, f"filtration{slot}_switch", f"Filtration {slot}")
+        self._slot = slot
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return True if the filtration schedule is active."""
+        if self.coordinator.data is None:
+            return None
+        return self.coordinator.data.get(f"filtration{self._slot}_active")
+
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        """Activate filtration schedule."""
+        await self.coordinator.async_toggle_filtration(self._slot, True)
+
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        """Deactivate filtration schedule."""
+        await self.coordinator.async_toggle_filtration(self._slot, False)

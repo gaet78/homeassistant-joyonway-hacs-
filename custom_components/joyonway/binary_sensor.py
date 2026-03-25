@@ -26,6 +26,7 @@ async def async_setup_entry(
         JoyonwayBinarySensor(coordinator, "pump2", "Pump 2", "mdi:pump"),
         JoyonwayBinarySensor(coordinator, "heating", "Heating", "mdi:fire"),
         JoyonwayBinarySensor(coordinator, "light", "Light", "mdi:lightbulb"),
+        JoyonwayConnectivitySensor(coordinator),
     ])
 
 
@@ -49,3 +50,27 @@ class JoyonwayBinarySensor(JoyonwayEntity, BinarySensorEntity):
         if self.coordinator.data is None:
             return None
         return self.coordinator.data.get(self._key)
+
+
+class JoyonwayConnectivitySensor(JoyonwayEntity, BinarySensorEntity):
+    """Binary sensor for W610 connectivity."""
+
+    _attr_device_class = BinarySensorDeviceClass.CONNECTIVITY
+    _attr_icon = "mdi:wifi"
+
+    def __init__(self, coordinator: JoyonwayCoordinator) -> None:
+        """Initialize."""
+        super().__init__(coordinator, "connectivity", "Connectivity")
+
+    @property
+    def available(self) -> bool:
+        """Always available — this sensor reports connectivity itself."""
+        return True
+
+    @property
+    def is_on(self) -> bool:
+        """Return True if the spa is connected."""
+        return (
+            self.coordinator.data is not None
+            and self.coordinator.data.get("status") == "ok"
+        )
