@@ -57,7 +57,7 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
 
         # Cooldown: skip manual mode detection after programme change
         self._programme_changed_at: datetime | None = None
-        self._programme_cooldown = timedelta(seconds=90)
+        self._programme_cooldown = timedelta(seconds=30)
 
     @property
     def programmes(self) -> dict:

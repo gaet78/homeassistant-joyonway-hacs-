@@ -175,8 +175,8 @@ L'intégration **usurpe l'adresse du panneau de contrôle** (`0x20`) pour envoye
 
 #### Lecture et écriture
 
-- **Lecture** : connexion TCP au W610, capture de 3 secondes de trafic bus, analyse des trames broadcast B4 (statut) et B5 (filtration)
-- **Écriture** : flood de la trame de commande pendant 1 à 10 secondes selon le type (pompe/lumière : 1s, consigne/filtration : 10s)
+- **Lecture** : connexion TCP au W610, capture de 1 seconde de trafic bus, analyse des trames broadcast B4 (statut) et B5 (filtration)
+- **Écriture** : flood de la trame de commande pendant 1 à 2 secondes selon le type (pompe/lumière : 1s, consigne/filtration : 2s)
 - **Polling** : rafraîchissement automatique toutes les 30 secondes
 
 #### Latence et temps de réponse
@@ -185,11 +185,13 @@ Du fait de cette architecture maître/esclave sans accusé de réception, **les 
 
 | Action | Durée approximative | Explication |
 |--------|-------------------|-------------|
-| Pompe ou lumière | ~5 secondes | 1s de flood + 3s de lecture pour confirmer |
-| Changement de consigne | ~15 secondes | 10s de flood + 3s de lecture |
-| Application d'un programme | ~30-40 secondes | Envoi séquentiel de la filtration (10s) puis de la consigne (10s) + lectures |
+| Pompe ou lumière | ~3 secondes | 1s de flood + 1s de lecture pour confirmer |
+| Changement de consigne | ~5 secondes | 2s de flood + 1s de lecture |
+| Application d'un programme | ~10 secondes | Envoi séquentiel de la filtration (2s) puis de la consigne (2s) + lectures |
 
-Pendant l'application d'un programme, la synchronisation avec le bus RS485 est **suspendue pendant 90 secondes** pour éviter que l'ancienne valeur de consigne (encore sur le bus) n'écrase la nouvelle avant qu'elle soit prise en compte par le contrôleur.
+Pendant l'application d'un programme, la synchronisation avec le bus RS485 est **suspendue pendant 30 secondes** pour éviter que l'ancienne valeur de consigne (encore sur le bus) n'écrase la nouvelle avant qu'elle soit prise en compte par le contrôleur.
+
+> **Note** : ces durées ont été optimisées par des tests de latence. Le bus broadcast ~2 trames/sec, et 10 trames de flood (0.5s) suffisent pour que le contrôleur reçoive la commande. Les valeurs actuelles incluent une marge de sécurité.
 
 > **Résolution température** : le contrôleur du spa utilise les **Fahrenheit en interne** avec une précision entière. Les mises à jour en Celsius apparaissent par paliers de ~0.56°C — c'est un comportement normal.
 
@@ -447,8 +449,8 @@ The integration **spoofs the control panel address** (`0x20`) to send commands. 
 
 #### Reading and Writing
 
-- **Reading**: connects to W610 TCP, captures 3 seconds of bus traffic, parses B4 (status) and B5 (filtration) broadcast frames
-- **Writing**: floods the command frame for 1 to 10 seconds depending on type (pump/light: 1s, setpoint/filtration: 10s)
+- **Reading**: connects to W610 TCP, captures 1 second of bus traffic, parses B4 (status) and B5 (filtration) broadcast frames
+- **Writing**: floods the command frame for 1 to 2 seconds depending on type (pump/light: 1s, setpoint/filtration: 2s)
 - **Polling**: automatic refresh every 30 seconds
 
 #### Latency and Response Time
@@ -457,11 +459,13 @@ Due to this master/slave architecture with no acknowledgment, **commands are not
 
 | Action | Approximate duration | Explanation |
 |--------|---------------------|-------------|
-| Pump or light | ~5 seconds | 1s flood + 3s read cycle to confirm |
-| Setpoint change | ~15 seconds | 10s flood + 3s read cycle |
-| Programme application | ~30-40 seconds | Sequential send of filtration (10s) then setpoint (10s) + read cycles |
+| Pump or light | ~3 seconds | 1s flood + 1s read cycle to confirm |
+| Setpoint change | ~5 seconds | 2s flood + 1s read cycle |
+| Programme application | ~10 seconds | Sequential send of filtration (2s) then setpoint (2s) + read cycles |
 
-During programme application, RS485 bus synchronization is **suspended for 90 seconds** to prevent the old setpoint value (still on the bus) from overwriting the new one before the controller has applied it.
+During programme application, RS485 bus synchronization is **suspended for 30 seconds** to prevent the old setpoint value (still on the bus) from overwriting the new one before the controller has applied it.
+
+> **Note**: these durations have been optimized through latency testing. The bus broadcasts ~2 frames/sec, and 10 flood frames (0.5s) are enough for the controller to receive the command. Current values include a safety margin.
 
 > **Temperature resolution**: the spa controller uses **Fahrenheit internally** with integer precision. Celsius updates appear in ~0.56°C steps — this is normal behavior.
 
