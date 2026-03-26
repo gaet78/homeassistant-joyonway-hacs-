@@ -8,7 +8,7 @@ from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResu
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import callback
 
-from .const import DOMAIN, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PROGRAMMES, CONF_CUSTOM_PROGRAMMES
+from .const import DOMAIN, DEFAULT_HOST, DEFAULT_PORT, CONF_PROGRAMMES
 
 
 class JoyonwayConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -62,16 +62,23 @@ class JoyonwayConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 class JoyonwayOptionsFlow(OptionsFlow):
-    """Handle options for Joyonway Spa (custom programmes)."""
+    """Handle options for Joyonway Spa (programme management)."""
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize."""
         self._config_entry = config_entry
         self._edit_name: str | None = None
 
-    def _get_custom(self) -> dict:
-        """Get custom programmes from options."""
-        return dict(self._config_entry.options.get(CONF_CUSTOM_PROGRAMMES, {}))
+    def _get_programmes(self) -> dict:
+        """Get all programmes from options."""
+        return dict(self._config_entry.options.get(CONF_PROGRAMMES, {}))
+
+    def _save(self, programmes: dict) -> ConfigFlowResult:
+        """Save programmes to options."""
+        return self.async_create_entry(
+            title="",
+            data={CONF_PROGRAMMES: programmes},
+        )
 
     async def async_step_init(
         self, user_input: dict | None = None
@@ -102,7 +109,7 @@ class JoyonwayOptionsFlow(OptionsFlow):
     async def async_step_add(
         self, user_input: dict | None = None
     ) -> ConfigFlowResult:
-        """Add a new custom programme."""
+        """Add a new programme."""
         errors = {}
         if user_input is not None:
             name = user_input["name"].strip()
@@ -110,15 +117,12 @@ class JoyonwayOptionsFlow(OptionsFlow):
                 errors["name"] = "name_empty"
             else:
                 display_name = self._format_name(name, user_input)
-                if display_name in DEFAULT_PROGRAMMES or display_name in self._get_custom():
+                programmes = self._get_programmes()
+                if display_name in programmes or display_name == "Manuel":
                     errors["name"] = "name_exists"
                 else:
-                    custom = self._get_custom()
-                    custom[display_name] = self._build_prog_def(user_input)
-                    return self.async_create_entry(
-                        title="",
-                        data={CONF_CUSTOM_PROGRAMMES: custom},
-                    )
+                    programmes[display_name] = self._build_prog_def(user_input)
+                    return self._save(programmes)
 
         return self.async_show_form(
             step_id="add",
@@ -131,10 +135,10 @@ class JoyonwayOptionsFlow(OptionsFlow):
     async def async_step_pick_edit(
         self, user_input: dict | None = None
     ) -> ConfigFlowResult:
-        """Pick which custom programme to edit."""
-        custom = self._get_custom()
-        if not custom:
-            return self.async_abort(reason="no_custom_programmes")
+        """Pick which programme to edit."""
+        programmes = self._get_programmes()
+        if not programmes:
+            return self.async_abort(reason="no_programmes")
 
         if user_input is not None:
             self._edit_name = user_input["programme"]
@@ -143,17 +147,17 @@ class JoyonwayOptionsFlow(OptionsFlow):
         return self.async_show_form(
             step_id="pick_edit",
             data_schema=vol.Schema({
-                vol.Required("programme"): vol.In(list(custom.keys())),
+                vol.Required("programme"): vol.In(list(programmes.keys())),
             }),
         )
 
     async def async_step_edit(
         self, user_input: dict | None = None
     ) -> ConfigFlowResult:
-        """Edit a custom programme."""
+        """Edit a programme."""
         errors = {}
-        custom = self._get_custom()
-        old_def = custom.get(self._edit_name, {})
+        programmes = self._get_programmes()
+        old_def = programmes.get(self._edit_name, {})
 
         if user_input is not None:
             new_name = user_input["name"].strip()
@@ -162,17 +166,14 @@ class JoyonwayOptionsFlow(OptionsFlow):
             else:
                 display_name = self._format_name(new_name, user_input)
                 if display_name != self._edit_name and (
-                    display_name in DEFAULT_PROGRAMMES or display_name in custom
+                    display_name in programmes or display_name == "Manuel"
                 ):
                     errors["name"] = "name_exists"
                 else:
-                    if self._edit_name in custom:
-                        del custom[self._edit_name]
-                    custom[display_name] = self._build_prog_def(user_input)
-                return self.async_create_entry(
-                    title="",
-                    data={CONF_CUSTOM_PROGRAMMES: custom},
-                )
+                    if self._edit_name in programmes:
+                        del programmes[self._edit_name]
+                    programmes[display_name] = self._build_prog_def(user_input)
+                    return self._save(programmes)
 
         # Pre-fill with current values
         defaults = {
@@ -201,23 +202,20 @@ class JoyonwayOptionsFlow(OptionsFlow):
     async def async_step_pick_delete(
         self, user_input: dict | None = None
     ) -> ConfigFlowResult:
-        """Pick which custom programme to delete."""
-        custom = self._get_custom()
-        if not custom:
-            return self.async_abort(reason="no_custom_programmes")
+        """Pick which programme to delete."""
+        programmes = self._get_programmes()
+        if not programmes:
+            return self.async_abort(reason="no_programmes")
 
         if user_input is not None:
             name = user_input["programme"]
-            custom.pop(name, None)
-            return self.async_create_entry(
-                title="",
-                data={CONF_CUSTOM_PROGRAMMES: custom},
-            )
+            programmes.pop(name, None)
+            return self._save(programmes)
 
         return self.async_show_form(
             step_id="pick_delete",
             data_schema=vol.Schema({
-                vol.Required("programme"): vol.In(list(custom.keys())),
+                vol.Required("programme"): vol.In(list(programmes.keys())),
             }),
         )
 

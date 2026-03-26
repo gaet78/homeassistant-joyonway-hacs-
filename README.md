@@ -136,9 +136,9 @@ Toutes les entités sont regroupées sous un appareil unique **"Joyonway Spa"**.
 
 ### Gestion des programmes
 
-#### Programmes prédéfinis
+#### Programmes par défaut
 
-L'intégration inclut 3 programmes prédéfinis + le mode Manuel :
+L'intégration est livrée avec 3 programmes prêts à l'emploi + le mode Manuel :
 
 | Programme | Consigne | Filtration |
 |-----------|----------|------------|
@@ -149,20 +149,21 @@ L'intégration inclut 3 programmes prédéfinis + le mode Manuel :
 
 Quand un programme est sélectionné, la consigne et la filtration sont envoyées automatiquement au spa via RS485. Si la consigne ou la filtration est modifiée manuellement (depuis HA ou le panneau physique du spa), le programme repasse automatiquement en **Manuel**.
 
-#### Programmes personnalisés
+**Tous les programmes sont modifiables et supprimables** — seul "Manuel" reste toujours présent. Si vous supprimez tous les programmes, vous pouvez les recréer à votre convenance.
 
-Vous pouvez créer vos propres programmes depuis l'interface HA :
+#### Gérer les programmes
+
+Depuis l'interface HA :
 
 1. Allez dans **Paramètres → Appareils et services**
 2. Trouvez **Joyonway Spa RS485** dans la liste
 3. Cliquez sur l'icône **roue dentée** (⚙️) à côté de l'intégration
-4. Choisissez **Ajouter un programme**
-5. Renseignez : nom, consigne température, et horaires de filtration
-6. Validez — le programme apparaît immédiatement dans le select "Programme"
+4. Choisissez une action :
+   - **Ajouter un programme** : nom, consigne température, et horaires de filtration
+   - **Modifier un programme** : sélectionnez le programme puis modifiez les paramètres
+   - **Supprimer un programme** : sélectionnez le programme à retirer
 
 Le nom du programme est automatiquement formaté avec un résumé : `Mon programme (35°C, 14h-22h)`.
-
-Depuis le même menu, vous pouvez aussi **modifier** ou **supprimer** vos programmes personnalisés. Les programmes prédéfinis ne peuvent pas être modifiés.
 
 ### Fonctionnement
 
@@ -391,9 +392,9 @@ All entities are grouped under a single **"Joyonway Spa"** device.
 
 ### Programme Management
 
-#### Built-in Programmes
+#### Default Programmes
 
-The integration includes 3 built-in programmes + Manual mode:
+The integration ships with 3 ready-to-use programmes + Manual mode:
 
 | Programme | Setpoint | Filtration |
 |-----------|----------|------------|
@@ -404,20 +405,21 @@ The integration includes 3 built-in programmes + Manual mode:
 
 When a programme is selected, the setpoint and filtration schedule are automatically sent to the spa via RS485. If the setpoint or filtration is changed manually (from HA or the physical spa panel), the programme automatically switches back to **Manual**.
 
-#### Custom Programmes
+**All programmes are editable and deletable** — only "Manuel" always remains. If you delete all programmes, you can recreate them as you wish.
 
-You can create your own programmes from the HA UI:
+#### Managing Programmes
+
+From the HA UI:
 
 1. Go to **Settings → Devices & Services**
 2. Find **Joyonway Spa RS485** in the list
 3. Click the **gear icon** (⚙️) next to the integration
-4. Choose **Add a programme**
-5. Fill in: name, target temperature, and filtration schedule
-6. Submit — the programme immediately appears in the "Programme" select entity
+4. Choose an action:
+   - **Add a programme**: name, target temperature, and filtration schedule
+   - **Edit a programme**: select the programme then modify its settings
+   - **Delete a programme**: select the programme to remove
 
 The programme name is automatically formatted with a summary: `My programme (35°C, 2pm-10pm)`.
-
-From the same menu, you can also **edit** or **delete** your custom programmes. Built-in programmes cannot be modified.
 
 ### How it Works
 

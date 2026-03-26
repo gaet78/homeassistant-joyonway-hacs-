@@ -81,7 +81,7 @@
       "name_empty": "Le nom du programme ne peut pas \u00eatre vide."
     },
     "abort": {
-      "no_custom_programmes": "Aucun programme personnalis\u00e9 \u00e0 modifier ou supprimer."
+      "no_programmes": "Aucun programme \u00e0 modifier ou supprimer. Ajoutez-en un d'abord."
     }
   }
 }

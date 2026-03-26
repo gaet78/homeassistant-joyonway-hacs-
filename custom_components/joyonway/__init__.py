@@ -6,7 +6,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN, CONF_CUSTOM_PROGRAMMES
+from .const import DOMAIN, CONF_PROGRAMMES, SEED_PROGRAMMES
 from .coordinator import JoyonwayCoordinator
 
 PLATFORMS = [
@@ -21,13 +21,22 @@ PLATFORMS = [
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Joyonway Spa from a config entry."""
-    custom_programmes = dict(entry.options.get(CONF_CUSTOM_PROGRAMMES, {}))
+    # Migration: seed default programmes on first load
+    if CONF_PROGRAMMES not in entry.options:
+        # Also migrate from old "custom_programmes" key if present
+        old_custom = dict(entry.options.get("custom_programmes", {}))
+        programmes = {**SEED_PROGRAMMES, **old_custom}
+        hass.config_entries.async_update_entry(
+            entry, options={**entry.options, CONF_PROGRAMMES: programmes}
+        )
+
+    programmes = dict(entry.options.get(CONF_PROGRAMMES, {}))
 
     coordinator = JoyonwayCoordinator(
         hass,
         host=entry.data[CONF_HOST],
         port=entry.data[CONF_PORT],
-        custom_programmes=custom_programmes,
+        programmes=programmes,
     )
 
     await coordinator.async_config_entry_first_refresh()
@@ -42,10 +51,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def _async_options_updated(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Handle options update — refresh custom programmes in coordinator."""
+    """Handle options update — refresh programmes in coordinator."""
     coordinator: JoyonwayCoordinator = hass.data[DOMAIN][entry.entry_id]
-    custom = dict(entry.options.get(CONF_CUSTOM_PROGRAMMES, {}))
-    coordinator.update_custom_programmes(custom)
+    programmes = dict(entry.options.get(CONF_PROGRAMMES, {}))
+    coordinator.update_programmes(programmes)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

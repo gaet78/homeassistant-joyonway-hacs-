@@ -16,8 +16,10 @@ FLOOD_INTERVAL = 0.05
 
 DEFAULT_SESSION_DURATION = 6
 
-DEFAULT_PROGRAMMES = {
-    "Manuel": {},
+CONF_PROGRAMMES = "programmes"
+
+# Seed programmes for first install (copied to options, then fully editable)
+SEED_PROGRAMMES = {
     "Hors gel (11°C, 24/7)": {
         "setpoint": 11,
         "filtration1": {"active": True, "start_h": 0, "start_m": 0, "end_h": 23, "end_m": 59},
@@ -34,5 +36,3 @@ DEFAULT_PROGRAMMES = {
         "filtration2": {"active": False},
     },
 }
-
-CONF_CUSTOM_PROGRAMMES = "custom_programmes"

@@ -18,8 +18,6 @@ from .const import (
     FLOOD_DURATION_SETPOINT,
     FLOOD_DURATION_FILTRATION,
     FLOOD_INTERVAL,
-    DEFAULT_PROGRAMMES,
-    CONF_CUSTOM_PROGRAMMES,
 )
 from .rs485 import read_spa, flood_cmd, cmd_setpoint, cmd_pump, cmd_light, cmd_filtration
 
@@ -30,7 +28,7 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
     """Coordinator to poll spa status via RS485."""
 
     def __init__(self, hass: HomeAssistant, host: str, port: int,
-                 custom_programmes: dict | None = None) -> None:
+                 programmes: dict | None = None) -> None:
         """Initialize."""
         super().__init__(
             hass,
@@ -41,8 +39,8 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
         self.host = host
         self.port = port
 
-        # Programmes: defaults + custom from options
-        self._custom_programmes: dict = custom_programmes or {}
+        # All programmes from options (Manuel is always implicit)
+        self._programmes: dict = programmes or {}
 
         # Soft state (managed by entities, persisted via RestoreEntity)
         self.programme: str = "Manuel"
@@ -59,17 +57,17 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
 
     @property
     def programmes(self) -> dict:
-        """Return all programmes (default + custom)."""
-        return {**DEFAULT_PROGRAMMES, **self._custom_programmes}
+        """Return all programmes (Manuel + user-defined)."""
+        return {"Manuel": {}, **self._programmes}
 
     @property
     def programme_names(self) -> list[str]:
         """Return all programme names."""
         return list(self.programmes.keys())
 
-    def update_custom_programmes(self, custom: dict) -> None:
-        """Update custom programmes from options flow."""
-        self._custom_programmes = custom
+    def update_programmes(self, programmes: dict) -> None:
+        """Update programmes from options flow."""
+        self._programmes = programmes
         # If current programme was deleted, switch to Manuel
         if self.programme not in self.programmes:
             self.programme = "Manuel"
@@ -273,8 +271,13 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
             self._plonge_unsub()
             self._plonge_unsub = None
 
-        # Apply Prêt à plonger
-        await self.async_apply_programme("Prêt à plonger (38°C, 10h-23h)")
+        # Direct RS485 commands: 38°C + filtration 10h-23h
+        self.programme = "Manuel"
+        self._notify_programme_listeners()
+        self.setpoint_target = 38.0
+        self._notify_setpoint_listeners()
+        await self.async_set_filtration(1, True, 10, 0, 23, 0)
+        await self.async_set_setpoint(38.0)
 
         # Start timer
         duration_seconds = self.session_duration * 3600
@@ -293,9 +296,14 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
         _LOGGER.info("Je plonge! Session for %dh started", self.session_duration)
 
     async def _async_end_plonge(self) -> None:
-        """End swim session: switch to En repos."""
-        await self.async_apply_programme("En repos (30°C, 12h-20h)")
-        _LOGGER.info("Plonge session ended, switched to En repos")
+        """End swim session: return to 30°C + filtration 12h-20h."""
+        self.programme = "Manuel"
+        self._notify_programme_listeners()
+        self.setpoint_target = 30.0
+        self._notify_setpoint_listeners()
+        await self.async_set_filtration(1, True, 12, 0, 20, 0)
+        await self.async_set_setpoint(30.0)
+        _LOGGER.info("Plonge session ended, switched to 30°C")
 
         # Send notification via HA
         try:
@@ -303,7 +311,7 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
                 "script", "envoyer_notification",
                 {
                     "title": "Spa : fin de session",
-                    "message": f"Session terminée — le spa repasse en mode En repos (30°C).",
+                    "message": "Session terminée — le spa repasse à 30°C.",
                     "priority": "info",
                     "tags": "hot_tub",
                 },
@@ -313,12 +321,17 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
             _LOGGER.warning("Could not send end-of-session notification")
 
     async def async_cancel_plonge(self) -> None:
-        """Cancel swim session and return to En repos."""
+        """Cancel swim session and return to 30°C."""
         if self._plonge_unsub:
             self._plonge_unsub()
             self._plonge_unsub = None
         self.plonge_end = None
-        await self.async_apply_programme("En repos (30°C, 12h-20h)")
+        self.programme = "Manuel"
+        self._notify_programme_listeners()
+        self.setpoint_target = 30.0
+        self._notify_setpoint_listeners()
+        await self.async_set_filtration(1, True, 12, 0, 20, 0)
+        await self.async_set_setpoint(30.0)
         _LOGGER.info("Plonge session cancelled")
 
     @property

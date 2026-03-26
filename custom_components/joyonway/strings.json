@@ -81,7 +81,7 @@
       "name_empty": "Programme name cannot be empty."
     },
     "abort": {
-      "no_custom_programmes": "No custom programmes to edit or delete."
+      "no_programmes": "No programmes to edit or delete. Add one first."
     }
   }
 }
