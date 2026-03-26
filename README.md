@@ -167,13 +167,29 @@ Le nom du programme est automatiquement formaté avec un résumé : `Mon program
 
 ### Fonctionnement
 
-L'intégration usurpe l'adresse du panneau de contrôle physique (`0x20`) sur le bus RS485 pour envoyer des commandes.
+#### Architecture du bus RS485
+
+Le bus RS485 du spa fonctionne en mode **maître/esclave**. Le contrôleur (maître) broadcast en permanence des trames d'état (~2x/sec). Le panneau de contrôle physique (esclave à l'adresse `0x20`) envoie des commandes quand l'utilisateur appuie sur un bouton.
+
+L'intégration **usurpe l'adresse du panneau de contrôle** (`0x20`) pour envoyer des commandes. Comme le protocole ne prévoit pas d'accusé de réception, les commandes sont envoyées en mode **flood** (répétition toutes les 50ms) pour garantir que le contrôleur les reçoive.
+
+#### Lecture et écriture
 
 - **Lecture** : connexion TCP au W610, capture de 3 secondes de trafic bus, analyse des trames broadcast B4 (statut) et B5 (filtration)
-- **Écriture** : envoi répété de la trame de commande toutes les 50ms pendant 1 à 10 secondes (selon le type)
+- **Écriture** : flood de la trame de commande pendant 1 à 10 secondes selon le type (pompe/lumière : 1s, consigne/filtration : 10s)
 - **Polling** : rafraîchissement automatique toutes les 30 secondes
 
-> **Temps de réponse** : les commandes (pompes, lumière, consigne) prennent quelques secondes avant confirmation dans HA. C'est normal — l'envoi de la commande par flood dure 1 à 10 secondes, puis il faut attendre le prochain cycle de lecture (3 secondes) pour que le retour d'état soit mis à jour.
+#### Latence et temps de réponse
+
+Du fait de cette architecture maître/esclave sans accusé de réception, **les commandes ne sont pas instantanées** :
+
+| Action | Durée approximative | Explication |
+|--------|-------------------|-------------|
+| Pompe ou lumière | ~5 secondes | 1s de flood + 3s de lecture pour confirmer |
+| Changement de consigne | ~15 secondes | 10s de flood + 3s de lecture |
+| Application d'un programme | ~30-40 secondes | Envoi séquentiel de la filtration (10s) puis de la consigne (10s) + lectures |
+
+Pendant l'application d'un programme, la synchronisation avec le bus RS485 est **suspendue pendant 90 secondes** pour éviter que l'ancienne valeur de consigne (encore sur le bus) n'écrase la nouvelle avant qu'elle soit prise en compte par le contrôleur.
 
 > **Résolution température** : le contrôleur du spa utilise les **Fahrenheit en interne** avec une précision entière. Les mises à jour en Celsius apparaissent par paliers de ~0.56°C — c'est un comportement normal.
 
@@ -423,13 +439,29 @@ The programme name is automatically formatted with a summary: `My programme (35�
 
 ### How it Works
 
-The integration spoofs the physical control panel address (`0x20`) on the RS485 bus to send commands.
+#### RS485 Bus Architecture
+
+The spa's RS485 bus operates in **master/slave** mode. The controller (master) continuously broadcasts status frames (~2x/sec). The physical control panel (slave at address `0x20`) sends commands when the user presses a button.
+
+The integration **spoofs the control panel address** (`0x20`) to send commands. Since the protocol has no acknowledgment mechanism, commands are sent in **flood mode** (repeated every 50ms) to ensure the controller receives them.
+
+#### Reading and Writing
 
 - **Reading**: connects to W610 TCP, captures 3 seconds of bus traffic, parses B4 (status) and B5 (filtration) broadcast frames
-- **Writing**: floods the command frame every 50ms for 1-10 seconds (depending on command type)
+- **Writing**: floods the command frame for 1 to 10 seconds depending on type (pump/light: 1s, setpoint/filtration: 10s)
 - **Polling**: automatic refresh every 30 seconds
 
-> **Response time**: commands (pumps, light, setpoint) take a few seconds before confirmation in HA. This is expected — the flood send takes 1-10 seconds, then the next read cycle (3 seconds) is needed to update the state.
+#### Latency and Response Time
+
+Due to this master/slave architecture with no acknowledgment, **commands are not instantaneous**:
+
+| Action | Approximate duration | Explanation |
+|--------|---------------------|-------------|
+| Pump or light | ~5 seconds | 1s flood + 3s read cycle to confirm |
+| Setpoint change | ~15 seconds | 10s flood + 3s read cycle |
+| Programme application | ~30-40 seconds | Sequential send of filtration (10s) then setpoint (10s) + read cycles |
+
+During programme application, RS485 bus synchronization is **suspended for 90 seconds** to prevent the old setpoint value (still on the bus) from overwriting the new one before the controller has applied it.
 
 > **Temperature resolution**: the spa controller uses **Fahrenheit internally** with integer precision. Celsius updates appear in ~0.56°C steps — this is normal behavior.
 
