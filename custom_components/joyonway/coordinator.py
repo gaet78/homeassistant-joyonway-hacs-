@@ -176,16 +176,6 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
         """Send a temperature setpoint command."""
         self.setpoint_target = temp_c
         temp_f = round(temp_c * 9 / 5 + 32)
-
-        # Check if in programme mode, exit first
-        if self.data and self.data.get("mode") == "programme":
-            _LOGGER.info("Spa in programme mode, exiting first")
-            exit_cmd = cmd_setpoint(50)
-            await self.hass.async_add_executor_job(
-                flood_cmd, self.host, self.port, exit_cmd, 5, FLOOD_INTERVAL
-            )
-            await asyncio.sleep(1)
-
         cmd = cmd_setpoint(temp_f)
         await self.hass.async_add_executor_job(
             flood_cmd, self.host, self.port, cmd, FLOOD_DURATION_SETPOINT, FLOOD_INTERVAL
