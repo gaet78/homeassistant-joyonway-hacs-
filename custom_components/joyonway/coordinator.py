@@ -55,6 +55,10 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
         self._programme_listeners: list = []
         self._setpoint_listeners: list = []
 
+        # Cooldown: skip manual mode detection after programme change
+        self._programme_changed_at: datetime | None = None
+        self._programme_cooldown = timedelta(seconds=90)
+
     @property
     def programmes(self) -> dict:
         """Return all programmes (Manuel + user-defined)."""
@@ -85,19 +89,31 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
         if data.get("status") == "offline":
             raise UpdateFailed("W610 connection failed")
 
-        # Sync setpoint from RS485 if it differs (changed from physical panel)
-        rs485_setpoint = data.get("setpoint")
-        if rs485_setpoint is not None:
-            if round(rs485_setpoint) != round(self.setpoint_target):
-                _LOGGER.info(
-                    "RS485 setpoint %.1f differs from target %.1f, syncing",
-                    rs485_setpoint, self.setpoint_target,
-                )
-                self.setpoint_target = round(rs485_setpoint)
-                self._notify_setpoint_listeners()
+        # Skip RS485 sync and manual mode detection during cooldown
+        # (programme commands are still being applied to the spa)
+        in_cooldown = (
+            self._programme_changed_at is not None
+            and datetime.now() - self._programme_changed_at < self._programme_cooldown
+        )
 
-        # Auto-detect manual mode
-        self._check_manual_mode(data)
+        if not in_cooldown:
+            # Sync setpoint from RS485 if it differs (changed from physical panel)
+            rs485_setpoint = data.get("setpoint")
+            if rs485_setpoint is not None:
+                if round(rs485_setpoint) != round(self.setpoint_target):
+                    _LOGGER.info(
+                        "RS485 setpoint %.1f differs from target %.1f, syncing",
+                        rs485_setpoint, self.setpoint_target,
+                    )
+                    self.setpoint_target = round(rs485_setpoint)
+                    self._notify_setpoint_listeners()
+
+            # Auto-detect manual mode
+            self._check_manual_mode(data)
+        else:
+            # Clear cooldown if expired on next check
+            if datetime.now() - self._programme_changed_at >= self._programme_cooldown:
+                self._programme_changed_at = None
 
         return data
 
@@ -230,6 +246,9 @@ class JoyonwayCoordinator(DataUpdateCoordinator[dict]):
 
         if name == "Manuel":
             return
+
+        # Start cooldown to avoid false auto-Manuel detection
+        self._programme_changed_at = datetime.now()
 
         prog_def = self.programmes.get(name)
         if not prog_def:
