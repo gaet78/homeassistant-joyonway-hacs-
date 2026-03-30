@@ -11,8 +11,10 @@
       }
     },
     "error": {
-      "cannot_connect": "Cannot connect to the W610 bridge. Check the IP address and port.",
-      "no_data": "Connected but no RS485 data received. Check wiring and W610 mode (Transparent)."
+      "timeout": "Connection timeout — the W610 is not reachable at this IP. Check: 1) IP address is correct, 2) W610 is powered on, 3) W610 is on the same network/VLAN.",
+      "port_closed": "Host is reachable but the TCP port is closed. Check: 1) the port number matches the W610 config (default: 8899), 2) no other application is already connected to it.",
+      "cannot_connect": "Network error connecting to the W610. Check: IP address, firewall rules, and that the W610 is on the same network/VLAN.",
+      "no_data": "TCP connection OK but no RS485 data received (3s). Check: 1) RS485 wiring (A/B not swapped), 2) W610 mode = Transparent / TCP Server, 3) baud rate = 9600, 4) spa is powered on."
     },
     "abort": {
       "already_configured": "This spa is already configured."

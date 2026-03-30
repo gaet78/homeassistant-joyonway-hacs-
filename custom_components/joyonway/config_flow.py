@@ -38,9 +38,14 @@ class JoyonwayConfigFlow(ConfigFlow, domain=DOMAIN):
                 read_spa, host, port, 3
             )
 
-            if result.get("status") == "offline":
+            status = result.get("status")
+            if status == "timeout":
+                errors["base"] = "timeout"
+            elif status == "refused":
+                errors["base"] = "port_closed"
+            elif status == "offline":
                 errors["base"] = "cannot_connect"
-            elif result.get("status") == "no_data":
+            elif status == "no_data":
                 errors["base"] = "no_data"
             else:
                 await self.async_set_unique_id(f"{host}:{port}")

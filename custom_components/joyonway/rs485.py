@@ -109,17 +109,37 @@ def read_spa(host: str, port: int, duration: int = 3) -> dict:
         sock.settimeout(5)
         sock.connect((host, port))
         sock.settimeout(0.5)
-    except Exception:
-        return {"status": "offline"}
+    except socket.timeout:
+        _LOGGER.warning(
+            "W610 connection timeout: %s:%s — host may be unreachable or port filtered",
+            host, port,
+        )
+        return {"status": "timeout"}
+    except ConnectionRefusedError:
+        _LOGGER.warning(
+            "W610 connection refused: %s:%s — host reachable but port %s is closed",
+            host, port, port,
+        )
+        return {"status": "refused"}
+    except OSError as err:
+        _LOGGER.warning(
+            "W610 connection error: %s:%s — %s", host, port, err,
+        )
+        return {"status": "offline", "error": str(err)}
 
+    _LOGGER.debug("W610 connected to %s:%s, listening for %ss…", host, port, duration)
     data = b''
     start = time.time()
     while time.time() - start < duration:
         try:
-            data += sock.recv(2048)
+            chunk = sock.recv(2048)
+            if chunk:
+                data += chunk
+                _LOGGER.debug("W610 received %d bytes (total: %d)", len(chunk), len(data))
         except socket.timeout:
             continue
     sock.close()
+    _LOGGER.debug("W610 read complete: %d bytes total from %s:%s", len(data), host, port)
 
     frame_b4 = extract_frame(data, 0xB4)
     result = parse_b4(frame_b4)
