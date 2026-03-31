@@ -216,6 +216,8 @@ Testé avec :
 - Bridge RS485/WiFi USR-W610
 - Home Assistant 2026.3+
 
+> **⚠️ Compatibilité** : cette intégration a été développée et testée uniquement avec le contrôleur **P69B133**. Le protocole RS485 pourrait différer selon le modèle de contrôleur Joyonway.
+
 Devrait fonctionner avec d'autres spas utilisant le même protocole propriétaire Joyonway/Balboa (délimiteur 0x7E, même structure de trame). Le protocole n'est **PAS** du Balboa standard — c'est une variante propriétaire.
 
 ### Cohabitation avec le panneau physique
@@ -489,6 +491,8 @@ Tested with:
 - Joyonway spa with **P69B133 3kW** control box ([product page](https://www.boospa.net/fr/boitier-de-controle-p69b133-3kw-joyonway.html)) with integrated heat pump
 - USR-W610 RS485/WiFi bridge
 - Home Assistant 2026.3+
+
+> **⚠️ Compatibility**: this integration has been developed and tested only with the **P69B133** controller. The RS485 protocol may differ depending on the Joyonway controller model.
 
 This should work with other spas using the same Joyonway/Balboa proprietary protocol (0x7E delimiter, same frame structure). The protocol is **NOT** standard Balboa — it's a proprietary variant.
 
