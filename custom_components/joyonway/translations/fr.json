@@ -14,7 +14,8 @@
       "timeout": "Timeout — le W610 n'est pas joignable à cette IP. Vérifiez : 1) l'adresse IP est correcte, 2) le W610 est alimenté, 3) il est sur le même réseau/VLAN.",
       "port_closed": "L'hôte répond mais le port TCP est fermé. Vérifiez : 1) le numéro de port correspond à la config W610 (défaut : 8899), 2) aucune autre application n'est déjà connectée dessus.",
       "cannot_connect": "Erreur réseau lors de la connexion au W610. Vérifiez : l'adresse IP, les règles de pare-feu, et que le W610 est sur le même réseau/VLAN.",
-      "no_data": "Connexion TCP OK mais aucune donnée RS485 reçue (3s). Vérifiez : 1) le câblage RS485 (A/B pas inversés), 2) le mode W610 = Transparent / TCP Server, 3) le baud rate = 9600, 4) le spa est alimenté."
+      "unknown_data": "Connexion TCP OK, des données sont reçues mais non reconnues comme protocole Joyonway. Vérifiez : 1) c'est bien un spa Joyonway/Mesda, 2) baud rate W610 = 9600 8N1, 3) câblage RS485 A/B. Activez les logs debug pour voir les données brutes.",
+      "no_data": "Connexion TCP OK mais 0 octets reçus (3s). Vérifiez : 1) le câblage RS485 (A/B pas inversés), 2) le mode W610 = Transparent / TCP Server, 3) le baud rate = 9600, 4) le spa est alimenté."
     },
     "abort": {
       "already_configured": "Ce spa est d\u00e9j\u00e0 configur\u00e9."

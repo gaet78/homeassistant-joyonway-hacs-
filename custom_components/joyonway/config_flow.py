@@ -45,6 +45,8 @@ class JoyonwayConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "port_closed"
             elif status == "offline":
                 errors["base"] = "cannot_connect"
+            elif status == "unknown_data":
+                errors["base"] = "unknown_data"
             elif status == "no_data":
                 errors["base"] = "no_data"
             else:

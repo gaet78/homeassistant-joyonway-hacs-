@@ -141,11 +141,20 @@ def read_spa(host: str, port: int, duration: int = 3) -> dict:
     sock.close()
     _LOGGER.debug("W610 read complete: %d bytes total from %s:%s", len(data), host, port)
 
+    if not data:
+        _LOGGER.warning("W610 %s:%s — connected but 0 bytes received in %ds", host, port, duration)
+        return {"status": "no_data", "bytes_received": 0}
+
     frame_b4 = extract_frame(data, 0xB4)
     result = parse_b4(frame_b4)
 
     if result is None:
-        return {"status": "no_data"}
+        _LOGGER.warning(
+            "W610 %s:%s — received %d bytes but no valid Joyonway frame found. "
+            "First 64 bytes: %s",
+            host, port, len(data), data[:64].hex(" "),
+        )
+        return {"status": "unknown_data", "bytes_received": len(data), "hex_preview": data[:64].hex(" ")}
 
     frame_b5 = extract_frame(data, 0xB5)
     parse_b5(frame_b4, frame_b5, result)
