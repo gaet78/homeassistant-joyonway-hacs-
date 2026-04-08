@@ -1,0 +1,61 @@
+set_filtration:
+  name: Set filtration schedule
+  description: Define the filtration schedule for a slot (start/end times and active state).
+  fields:
+    slot:
+      name: Slot
+      description: Filtration slot number (1 or 2)
+      required: true
+      example: 1
+      selector:
+        number:
+          min: 1
+          max: 2
+          mode: box
+    active:
+      name: Active
+      description: Enable or disable the filtration slot
+      required: true
+      example: true
+      selector:
+        boolean:
+    start_hour:
+      name: Start hour
+      description: Start hour (0-23)
+      required: true
+      example: 11
+      selector:
+        number:
+          min: 0
+          max: 23
+          mode: box
+    start_minute:
+      name: Start minute
+      description: Start minute (0-59)
+      required: true
+      example: 0
+      selector:
+        number:
+          min: 0
+          max: 59
+          mode: box
+    end_hour:
+      name: End hour
+      description: End hour (0-23)
+      required: true
+      example: 14
+      selector:
+        number:
+          min: 0
+          max: 23
+          mode: box
+    end_minute:
+      name: End minute
+      description: End minute (0-59)
+      required: true
+      example: 0
+      selector:
+        number:
+          min: 0
+          max: 59
+          mode: box
